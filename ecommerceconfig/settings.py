@@ -142,3 +142,18 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CELERY_BROKER_URL = os.getenv(
+    'CELERY_BROKER_URL',
+    f"amqp://{os.getenv('CELERY_BROKER_USER')}:{os.getenv('CELERY_BROKER_PASSWORD')}@"
+    f"{os.getenv('CELERY_BROKER_HOST')}:{os.getenv('CELERY_BROKER_PORT')}//"
+)
+
+
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+
+INSTALLED_APPS += [
+    'django_celery_results',
+    'django_celery_beat',
+]
