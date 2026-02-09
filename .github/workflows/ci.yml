@@ -1,0 +1,83 @@
+name: Django CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  backend-ci:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: ecommerceconfig_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      rabbitmq:
+        image: rabbitmq:3-management
+        ports:
+          - 5672:5672
+
+    env:
+      DEBUG: True
+      SECRET_KEY: test-secret-key
+      DB_NAME: ecommerceconfig_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: postgres
+      DB_PORT: 5432
+      CELERY_BROKER_HOST: rabbitmq
+      CELERY_BROKER_PORT: 5672
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Wait for Postgres
+        run: |
+          until pg_isready -h postgres -p 5432; do
+            echo "Waiting for postgres..."
+            sleep 2
+          done
+
+      - name: Run Django checks
+        run: |
+          python manage.py check
+
+      - name: Run migrations
+        run: |
+          python manage.py migrate
+
+      - name: Run tests
+        run: |
+          python manage.py test
+
+      - name: Lint with flake8
+        run: |
+          flake8 .
+
+      - name: Format check with black
+        run: |
+          black --check .
