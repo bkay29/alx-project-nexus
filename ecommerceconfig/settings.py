@@ -14,8 +14,11 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
-load_dotenv()
+
+# Load .env only for local development (not CI, not prod)
+if not os.getenv("GITHUB_ACTIONS"):
+    load_dotenv()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -134,13 +137,14 @@ WSGI_APPLICATION = 'ecommerceconfig.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
+        'NAME': os.getenv('DB_NAME', 'postgres'),
+        'USER': os.getenv('DB_USER', 'postgres'),
+        'PASSWORD': os.getenv('DB_PASSWORD', ''),
+        'HOST': os.getenv('DB_HOST', 'localhost'),
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -183,10 +187,13 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
 CELERY_BROKER_URL = os.getenv(
-    'CELERY_BROKER_URL',
-    f"amqp://{os.getenv('CELERY_BROKER_USER')}:{os.getenv('CELERY_BROKER_PASSWORD')}@"
-    f"{os.getenv('CELERY_BROKER_HOST')}:{os.getenv('CELERY_BROKER_PORT')}//"
+    "CELERY_BROKER_URL",
+    f"amqp://{os.getenv('CELERY_BROKER_USER', 'guest')}:"
+    f"{os.getenv('CELERY_BROKER_PASSWORD', 'guest')}@"
+    f"{os.getenv('CELERY_BROKER_HOST', 'localhost')}:"
+    f"{os.getenv('CELERY_BROKER_PORT', '5672')}//"
 )
 
 
