@@ -12,6 +12,7 @@ cron_descriptor==2.0.6
 Django==5.2.11
 django-celery-beat==2.8.1
 django-ratelimit==4.1.0
+django-redis==6.0.0
 django-timezone-field==7.2.1
 django_celery_results==2.6.0
 djangorestframework==3.16.1
@@ -29,6 +30,7 @@ python-crontab==3.3.0
 python-dateutil==2.9.0.post0
 python-dotenv==1.2.1
 PyYAML==6.0.3
+redis==7.1.1
 referencing==0.37.0
 rpds-py==0.30.0
 six==1.17.0

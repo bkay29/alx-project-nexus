@@ -2,9 +2,9 @@ name: Django CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   backend-ci:
@@ -29,11 +29,6 @@ jobs:
         image: rabbitmq:3-management
         ports:
           - 5672:5672
-      
-      redis:
-        image: redis:7
-        ports:
-          - 6379:6379
 
     env:
       DEBUG: True
@@ -43,12 +38,11 @@ jobs:
       DB_PASSWORD: postgres
       DB_HOST: localhost
       DB_PORT: 5432
+
       CELERY_BROKER_HOST: rabbitmq
       CELERY_BROKER_PORT: 5672
-      RATELIMIT_ENABLE: False
-      CACHE_BACKEND: django.core.cache.backends.redis.RedisCache
-      REDIS_URL: redis://localhost:6379/1
 
+      RATELIMIT_ENABLE: False
 
     steps:
       - name: Checkout code
