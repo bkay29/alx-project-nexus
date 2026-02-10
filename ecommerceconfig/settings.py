@@ -233,13 +233,18 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Celery
 # ======================
 
-CELERY_BROKER_URL = os.getenv(
-    "CELERY_BROKER_URL",
-    f"amqp://{os.getenv('CELERY_BROKER_USER', 'guest')}:"
-    f"{os.getenv('CELERY_BROKER_PASSWORD', 'guest')}@"
-    f"{os.getenv('CELERY_BROKER_HOST', 'localhost')}:"
-    f"{os.getenv('CELERY_BROKER_PORT', '5672')}//"
-)
+CELERY_ENABLED = os.getenv("CELERY_ENABLED", "True").lower() == "true"
 
-CELERY_ACCEPT_CONTENT = ["json"]
-CELERY_TASK_SERIALIZER = "json"
+if CELERY_ENABLED:
+    CELERY_BROKER_URL = os.getenv(
+        "CELERY_BROKER_URL",
+        f"amqp://{os.getenv('CELERY_BROKER_USER', 'guest')}:"
+        f"{os.getenv('CELERY_BROKER_PASSWORD', 'guest')}@"
+        f"{os.getenv('CELERY_BROKER_HOST', 'localhost')}:"
+        f"{os.getenv('CELERY_BROKER_PORT', '5672')}//"
+    )
+
+    CELERY_ACCEPT_CONTENT = ["json"]
+    CELERY_TASK_SERIALIZER = "json"
+else:
+    CELERY_BROKER_URL = None
