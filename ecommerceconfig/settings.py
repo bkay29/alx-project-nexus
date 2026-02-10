@@ -28,7 +28,13 @@ SECRET_KEY = os.getenv("SECRET_KEY", "unsafe-dev-key")
 
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",") if not DEBUG else []
+if DEBUG:
+    ALLOWED_HOSTS = []
+else:
+    ALLOWED_HOSTS = os.getenv(
+        "ALLOWED_HOSTS",
+        ".onrender.com, localhost, 127.0.0.1"
+    ).split(",")
 
 # ======================
 # Feature flags
@@ -74,6 +80,7 @@ AUTH_USER_MODEL = "users.User"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -216,6 +223,9 @@ USE_TZ = True
 # ======================
 
 STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "staticfiles" 
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage" 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
