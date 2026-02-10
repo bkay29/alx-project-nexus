@@ -1,5 +1,7 @@
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from django_ratelimit.decorators import ratelimit
+from django.utils.decorators import method_decorator
+from rest_framework_simplejwt.views import TokenObtainPairView
 
-# URLS will point to:
-# /api/auth/login/  -> TokenObtainPairView
-# /api/auth/refresh/ -> TokenRefreshView
+@method_decorator(ratelimit(key="ip", rate="5/m", block=True), name="post")
+class LoginView(TokenObtainPairView):
+    pass
