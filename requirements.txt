@@ -18,6 +18,7 @@ django_celery_results==2.6.0
 djangorestframework==3.16.1
 djangorestframework_simplejwt==5.5.1
 drf-spectacular==0.29.0
+gunicorn==25.0.3
 inflection==0.5.1
 jsonschema==4.26.0
 jsonschema-specifications==2025.9.1
@@ -41,3 +42,4 @@ tzlocal==5.3.1
 uritemplate==4.2.0
 vine==5.1.0
 wcwidth==0.6.0
+whitenoise==6.11.0
