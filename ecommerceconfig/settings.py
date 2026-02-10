@@ -56,7 +56,7 @@ RATELIMIT_ENABLE = os.getenv("RATELIMIT_ENABLE", "True").lower() == "true"
 
 if  RATELIMIT_ENABLE:
     INSTALLED_APPS.append("django_ratelimit")
-    
+
 AUTH_USER_MODEL = "users.User"
 
 REST_FRAMEWORK = {
@@ -154,11 +154,15 @@ CACHES = {
     "default": {
         "BACKEND": os.getenv(
             "CACHE_BACKEND",
-            "django.core.cache.backends.locmem.LocMemCache",
+            "django.core.cache.backends.redis.RedisCache",  # use Redis in CI
         ),
-        "LOCATION": "unique-default",
+        "LOCATION": os.getenv(
+            "REDIS_URL",
+            "redis://localhost:6379/1",  # default Redis URL
+        ),
     }
 }
+
 
 
 # Password validation
