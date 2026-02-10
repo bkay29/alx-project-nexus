@@ -52,6 +52,11 @@ INSTALLED_APPS = [
     'categories',
 ]
 
+RATELIMIT_ENABLE = os.getenv("RATELIMIT_ENABLE", "True").lower() == "true"
+
+if  RATELIMIT_ENABLE:
+    INSTALLED_APPS.append("django_ratelimit")
+    
 AUTH_USER_MODEL = "users.User"
 
 REST_FRAMEWORK = {
