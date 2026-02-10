@@ -1,8 +1,10 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets, filters
 from .models import Product
 from .serializers import ProductSerializer
 from .permissions import IsAdminOrReadOnly
 
+@extend_schema(tags=["Products"])
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.filter(is_active=True)
     serializer_class = ProductSerializer
@@ -12,3 +14,4 @@ class ProductViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name', 'description']
     ordering_fields = ['price', 'created_at']
+    filterset_fields = ['category_id']

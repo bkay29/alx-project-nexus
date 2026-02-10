@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'drf_spectacular',
     'users',
     'products',
     'categories',
@@ -55,8 +56,41 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
+
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
+# DRF Spectacular / Swagger settings
+SPECTACULAR_SETTINGS = {
+    "TITLE": "ALX Project Nexus – E-commerce API",
+    "DESCRIPTION": """
+    Backend API for an e-commerce platform.
+
+    Features:
+    - JWT authentication
+    - Products & Categories
+    - Admin-only write operations
+    - Inventory background tasks (Celery)
+    """,
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "COMPONENT_SPLIT_REQUEST": True,
+}
+
+# JWT security configuration for Swagger UI
+SPECTACULAR_SETTINGS["SECURITY"] = [
+    {"bearerAuth": []}
+]
+
+SPECTACULAR_SETTINGS["COMPONENTS"] = {
+    "securitySchemes": {
+        "bearerAuth": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT",
+        }
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
