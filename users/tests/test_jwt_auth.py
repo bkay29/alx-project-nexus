@@ -1,13 +1,12 @@
 from django.contrib.auth import get_user_model
-from rest_framework.test import APITestCase
-from rest_framework import status
 from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APITestCase
 
 User = get_user_model()
 
 
 class JWTAuthTests(APITestCase):
-
     def setUp(self):
         self.user = User.objects.create_user(
             email="testuser@example.com",
@@ -61,4 +60,25 @@ class JWTAuthTests(APITestCase):
 
         response = self.client.get("/api/categories/")
 
-        self.assertNotEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_refresh_token_returns_new_access_token(self):
+        token_response = self.client.post(
+            self.token_url,
+            {
+                "email": "testuser@example.com",
+                "password": "StrongPass123",
+            },
+            format="json",
+        )
+
+        refresh_token = token_response.data["refresh"]
+
+        response = self.client.post(
+            self.refresh_url,
+            {"refresh": refresh_token},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("access", response.data)
